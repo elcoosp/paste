@@ -224,10 +224,10 @@ pub(crate) fn paste(segments: &[Segment]) -> Result<String> {
 
 fn sep_case(separator: char, last: &str, evaluated: &mut Vec<String>) {
     let mut acc = String::new();
-    let mut prev = separator.clone();
+    let mut prev = separator;
     for ch in last.chars() {
         if ch.is_uppercase() && prev != separator {
-            acc.push(separator.clone());
+            acc.push(separator);
         }
         acc.push(ch);
         prev = ch;
