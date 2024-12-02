@@ -156,7 +156,7 @@ mod segment;
 use crate::attr::expand_attr;
 use crate::error::{Error, Result};
 use crate::segment::Segment;
-use proc_macro::{Delimiter, Group, Ident, Punct, Spacing, Span, TokenStream, TokenTree};
+use proc_macro::{Delimiter, Group, Ident, Literal, Punct, Spacing, Span, TokenStream, TokenTree};
 use std::char;
 use std::iter;
 use std::panic;
@@ -441,12 +441,15 @@ fn pasted_to_tokens(mut pasted: String, span: Span) -> Result<TokenStream> {
 
     let ident = match panic::catch_unwind(|| Ident::new(&pasted, span)) {
         Ok(ident) => TokenTree::Ident(ident),
-        Err(_) => {
-            return Err(Error::new(
-                span,
-                &format!("`{:?}` is not a valid identifier", pasted),
-            ));
-        }
+        Err(_) => match panic::catch_unwind(|| Literal::string(&pasted)) {
+            Ok(lit_str) => TokenTree::Literal(lit_str),
+            Err(_) => {
+                return Err(Error::new(
+                    span,
+                    &format!("`{:?}` is not a valid identifier, nor a string", pasted),
+                ));
+            }
+        },
     };
 
     tokens.extend(iter::once(ident));

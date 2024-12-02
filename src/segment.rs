@@ -180,18 +180,8 @@ pub(crate) fn paste(segments: &[Segment]) -> Result<String> {
                     "upper" => {
                         evaluated.push(last.to_uppercase());
                     }
-                    "snake" => {
-                        let mut acc = String::new();
-                        let mut prev = '_';
-                        for ch in last.chars() {
-                            if ch.is_uppercase() && prev != '_' {
-                                acc.push('_');
-                            }
-                            acc.push(ch);
-                            prev = ch;
-                        }
-                        evaluated.push(acc.to_lowercase());
-                    }
+                    "snake" => sep_case('_', &last, &mut evaluated),
+                    "dash" => sep_case('-', &last, &mut evaluated),
                     "camel" => {
                         let mut acc = String::new();
                         let mut prev = '_';
@@ -230,4 +220,17 @@ pub(crate) fn paste(segments: &[Segment]) -> Result<String> {
         pasted.insert(0, '\'');
     }
     Ok(pasted)
+}
+
+fn sep_case(separator: char, last: &str, evaluated: &mut Vec<String>) {
+    let mut acc = String::new();
+    let mut prev = separator.clone();
+    for ch in last.chars() {
+        if ch.is_uppercase() && prev != separator {
+            acc.push(separator.clone());
+        }
+        acc.push(ch);
+        prev = ch;
+    }
+    evaluated.push(acc.to_lowercase());
 }

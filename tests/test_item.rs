@@ -116,6 +116,28 @@ mod test_to_upper {
         assert_eq!(MY_TEST_HERE, "TEST");
     }
 }
+mod test_to_dash {
+    use paste::paste;
+
+    macro_rules! m {
+        ($id:ident) => {
+            paste! {
+                const DEFAULT_SNAKE: &str = [<$id:dash>];
+                const LOWER_SNAKE: &str = [<$id:dash:lower>];
+                const UPPER_SNAKE: &str = [<$id:dash:upper>];
+            }
+        };
+    }
+
+    m!(ThisIsButATest);
+
+    #[test]
+    fn test_to_snake() {
+        assert_eq!(DEFAULT_SNAKE, "this-is-but-a-test");
+        assert_eq!(LOWER_SNAKE, "this-is-but-a-test");
+        assert_eq!(UPPER_SNAKE, "THIS-IS-BUT-A-TEST");
+    }
+}
 
 mod test_to_snake {
     use paste::paste;
