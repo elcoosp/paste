@@ -180,6 +180,10 @@ pub(crate) fn paste(segments: &[Segment]) -> Result<String> {
                     "upper" => {
                         evaluated.push(last.to_uppercase());
                     }
+                    "pascal" => {
+                        use convert_case::{Case, Casing};
+                        evaluated.push(last.to_case(Case::Pascal));
+                    }
                     "snake" => sep_case('_', &last, &mut evaluated),
                     "dash" => sep_case('-', &last, &mut evaluated),
                     "camel" => {
